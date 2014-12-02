@@ -10,21 +10,21 @@ var listener;
 var paddle;
 var paddle_constraints;
 var paddle_mov;
-var paddle_speed = 35.0;
+var paddle_speed = 50.0;
 var paddle_width = 30;
 
-var start_speed = 25.0;
+var start_speed = 80.0;
 var offset = 150.0;
 
 var numBricks;
 var livesLost = 0;
 var step_Interval;
 
-var game_over = false;
+var game_over = true;
 
 function setupWorld() {
   $('myCanvas').setStyle({
-    backgroundColor: '#900',
+    backgroundColor: '#87CEFA',
   });
 /*
 //Collision listener
@@ -47,6 +47,7 @@ function setupWorld() {
   var rows = 10;
   var cols = 10;
   numBricks = rows * cols;
+  //numBricks = 0;
 
   for(var r = 0; r < rows; r++)
   {
@@ -172,9 +173,6 @@ function start_game() {
 
 	var canvasElm = $('myCanvas');
 
-  paper.install(window);
-  paper.setup(canvasElm);
-
   var path = new Path();
   path.strokeColor = 'black';
   var start = new Point(100, 100);
@@ -214,7 +212,29 @@ function start_game() {
 }
 
 //Start Game on load
-Event.observe(window, 'load', start_game);
+Event.observe(window, 'load', function(){
+	var canvasElm = $('myCanvas');
+
+  paper.install(window);
+  paper.setup(canvasElm);
+
+	canvasWidth = parseInt(canvasElm.width);
+	canvasHeight = parseInt(canvasElm.height);
+	canvasTop = parseInt(canvasElm.style.top);
+	canvasLeft = parseInt(canvasElm.style.left);
+
+  var text = new PointText(new Point(canvasWidth/2, canvasHeight/2 ));
+  text.justification = 'center';
+  text.fillColor = 'black';
+  text.fontSize = 30;
+  text.content = 'Press Enter to start Playing!';
+
+  var text2 = new PointText(new Point(canvasWidth/2, canvasHeight/2 - 0.1 * canvasHeight));
+  text2.style = text.style;
+  text2.content = 'Welcome to Break Blocks';
+
+  view.draw();
+});
 
 $(document).observe('keydown', function (e) {
   switch (e.keyCode) {
@@ -297,4 +317,16 @@ $(document).observe('keyup', function (e) {
       e.stop();
       break;
   }
+});
+
+Event.observe(window, "resize", function(){
+  console.log("resize");
+	var canvasElm = $('myCanvas');
+
+	canvasWidth = parseInt(canvasElm.width);
+	canvasHeight = parseInt(canvasElm.height);
+	canvasTop = parseInt(canvasElm.style.top);
+	canvasLeft = parseInt(canvasElm.style.left);
+
+  drawWorld(world);
 });

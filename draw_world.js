@@ -1,3 +1,12 @@
+var ball_group;
+var paddle_group;
+var bricks;
+
+function createPoint(x,y)
+{
+  return new Point(scaleX(x), scaleY(y));
+}
+
 function scaleX(num)
 {
   return num * canvasWidth /510.0;
@@ -7,10 +16,6 @@ function scaleY(num)
 {
   return num * canvasHeight /340.0;
 }
-
-var ball_group;
-var paddle_group;
-var bricks;
 
 function removeBrick(x,y)
 {
@@ -35,9 +40,10 @@ function drawMovingObjects()
 
 function drawWorld(world) {
 
-  project.activeLayer.children.forEach(function(child) {
-        child.remove();
-      });
+  while(project.activeLayer.children.length > 0)
+    project.activeLayer.children.forEach(function(child) {
+          child.remove();
+        });
 
   paddle_group = new Group();
   ball_group = new Group();
@@ -110,7 +116,7 @@ function drawShape(shape) {
     var circle = shape;
     var pos = circle.m_position;
     var r = circle.m_radius;
-    var p_circle = new Path.Circle(new Point(pos.x, pos.y), r);
+    var p_circle = new Path.Circle(createPoint(pos.x, pos.y), r);
     p_circle.fillColor = 'black';
 
     ball_group.addChild(p_circle);
@@ -154,8 +160,7 @@ function drawShape(shape) {
 
       var tl = b2Math.AddVV(box_pos, b2Math.b2MulMV(box.m_R, box.m_vertices[0]));
       var br = b2Math.AddVV(box_pos, b2Math.b2MulMV(box.m_R, box.m_vertices[2]));
-      var rect = Path.Rectangle(new Point(tl.x, tl.y), new Point(br.x, br.y));
-      rect.fillColor = 'pink';
+      var rect = Path.Rectangle(createPoint(tl.x, tl.y), createPoint(br.x, br.y));
 
       var bod = box.GetBody();
       var data = bod.GetUserData();
@@ -163,7 +168,10 @@ function drawShape(shape) {
       {
         console.log('Brick');
         bricks[data.row][data.col] = rect;
+        rect.fillColor = 'red';
       }
+      else
+        rect.fillColor = 'silver';
 
       break;
     }
@@ -184,10 +192,10 @@ function drawShape(shape) {
       else{
       */
       var vert = b2Math.AddVV(poly_pos, b2Math.b2MulMV(poly.m_R, poly.m_vertices[verts]));
-      poly_path.add(new Point(vert.x, vert.y));
+      poly_path.add(createPoint(vert.x, vert.y));
 
     }
-    poly_path.fillColor = 'blue';
+    poly_path.fillColor = 'purple';
     paddle_group.addChild(poly_path);
 
     /*
@@ -216,12 +224,12 @@ function drawWinning()
   var text = new PointText(new Point(canvasWidth/2, canvasHeight/2));
   text.justification = 'center';
   text.fillColor = 'black';
+  text.fontSize = 30;
   text.content = 'You Win and managed to die ' + livesLost + ' times!';
 
 
   var text2 = new PointText(new Point(canvasWidth/2, canvasHeight/2 + 0.1 * canvasHeight));
-  text2.justification = 'center';
-  text2.fillColor = 'black';
+  text2.style = text.style;
   text2.content = 'Better Luck Next time! Want to play again? (Hit enter)';
 
   view.draw();
