@@ -29,7 +29,7 @@ Object.extend(b2PolyDef.prototype,
 	initialize: function()
 	{
 		// The constructor for b2ShapeDef
-		this.type = b2Shape.e_unknownShape;
+		this.type = b2Shape.e_polyShape;
 		this.userData = null;
 		this.localPosition = new b2Vec2(0.0, 0.0);
 		this.localRotation = 0.0;

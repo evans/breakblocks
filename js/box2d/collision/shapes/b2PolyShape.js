@@ -115,6 +115,7 @@ Object.extend(b2PolyShape.prototype,
 
 		//b2Settings.b2Assert(def.type == b2Shape.e_boxShape || def.type == b2Shape.e_polyShape);
 		this.m_type = b2Shape.e_polyShape;
+		
 
 		var localR = new b2Mat22(def.localRotation);
 

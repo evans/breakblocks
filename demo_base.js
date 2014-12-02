@@ -17,9 +17,11 @@ function createTop(world) {
 	var groundSd = new b2BoxDef();
 	groundSd.extents.Set(1000, 5);
 	groundSd.restitution = 1.0;
+  groundSd.m_type = b2Shape.e_boxShape;
 	var groundBd = new b2BodyDef();
 	groundBd.AddShape(groundSd);
 	groundBd.position.Set(-500, 0);
+  groundBd.type = b2Shape.e_boxShape;
 	return world.CreateBody(groundBd)
 }
 
@@ -27,6 +29,7 @@ function createGround(world) {
 	var groundSd = new b2BoxDef();
 	groundSd.extents.Set(1000, 5);
 	groundSd.restitution = 0.0;
+  groundSd.m_type = b2Shape.e_boxShape;
 	var groundBd = new b2BodyDef();
 	groundBd.AddShape(groundSd);
 	groundBd.position.Set(-500, 340);
@@ -60,6 +63,7 @@ function createBox(world, x, y, width, height, fixed, angle) {
       boxSd.localRotation = angle;
     console.log(boxSd.localRotation);
   }
+  boxSd.m_type = b2Shape.e_boxShape;
 
 	var boxBd = new b2BodyDef();
 	boxBd.AddShape(boxSd);
@@ -104,6 +108,7 @@ function createPaddle(world, x,y,width,height)
   var polyBd = new b2BodyDef();
   polyBd.AddShape(polySd);
   polyBd.position.Set(x,y);
+  polyBd.type = b2Shape.e_polyShape;
   return world.CreateBody(polyBd)
 
 

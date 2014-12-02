@@ -62,7 +62,7 @@ function setupWorld() {
   paddle.SetLinearVelocity(new b2Vec2 (paddle_speed, 0));
   paddle_constraint = createPaddleConstraints(world, 250, 300, paddle, world.GetGroundBody());
   //paddle_mov = createPaddleMov(world, paddle);
-};
+}
 
 function step() {
   //console.log("paddle is static:" + paddle.IsStatic());
@@ -127,16 +127,25 @@ function step() {
 	world.Step(timeStep, iteration);
 	ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 	drawWorld(world, ctx);
-};
+}
 
 Event.observe(window, 'load', function() {
   console.log('Setup');
+
+	var canvasElm = $('myCanvas');
+
   paper.install(window);
-  paper.setup('myCanvas');
+  paper.setup(canvasElm);
+
+  var path = new Path();
+  path.strokeColor = 'black';
+  var start = new Point(100, 100);
+  path.moveTo(start);
+  path.lineTo(start.add([ 200, -50 ]));
+  view.draw();
 
 	setupWorld();
 	ctx = $('myCanvas').getContext('2d');
-	var canvasElm = $('myCanvas');
 	canvasWidth = parseInt(canvasElm.width);
 	canvasHeight = parseInt(canvasElm.height);
 	canvasTop = parseInt(canvasElm.style.top);
