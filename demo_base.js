@@ -16,7 +16,7 @@ function createWorld() {
 function createTop(world) {
 	var groundSd = new b2BoxDef();
 	groundSd.extents.Set(1000, 5);
-	groundSd.restitution = 1.02;
+	groundSd.restitution = 1.0;
 	var groundBd = new b2BodyDef();
 	groundBd.AddShape(groundSd);
 	groundBd.position.Set(-500, 0);
@@ -26,7 +26,7 @@ function createTop(world) {
 function createGround(world) {
 	var groundSd = new b2BoxDef();
 	groundSd.extents.Set(1000, 5);
-	groundSd.restitution = 1.02;
+	groundSd.restitution = 0.0;
 	var groundBd = new b2BodyDef();
 	groundBd.AddShape(groundSd);
 	groundBd.position.Set(-500, 340);
@@ -37,7 +37,7 @@ function createBall(world, x, y) {
 	var ballSd = new b2CircleDef();
 	ballSd.density = 0.01;
 	ballSd.radius = 5;
-	ballSd.restitution = 1.05;
+	ballSd.restitution = 1.02;
 	var ballBd = new b2BodyDef();
 	ballBd.AddShape(ballSd);
 	ballBd.position.Set(x,y);
@@ -98,7 +98,7 @@ function createPaddle(world, x,y,width,height)
   polySd.localRotation = Math.PI;
 
   polySd.density = 1.0;
-  polySd.restitution = 1.0;
+  polySd.restitution = 0.5;
   polySd.friction = 0.0;
 
   var polyBd = new b2BodyDef();

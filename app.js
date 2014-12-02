@@ -6,10 +6,14 @@ var canvasTop;
 var canvasLeft;
 var ball;
 var listener;
+
 var paddle;
 var paddle_constraints;
 var paddle_mov;
-var paddle_speed = 50.0;
+var paddle_speed = 35.0;
+var paddle_width = 30;
+
+var start_speed = 25.0;
 var offset = 150.0;
 
 function setupWorld() {
@@ -48,14 +52,14 @@ function setupWorld() {
   blocks[0][0].m_userData = {name: 'brick', row: 0, col: 0};
   */
 
-  ball = createBall(world, 250, 200);
+  ball = createBall(world, 250, 210);
   ball.m_userData = {name: 'ball'};
-  ball.SetLinearVelocity(new b2Vec2 (0, 100));
+  ball.SetLinearVelocity(new b2Vec2 (paddle_speed, start_speed));
   //ball.ApplyForce(new b2Vec2 (0, -10), ball.GetCenterPosition());
   //ball.ApplyImpulse(new b2Vec2 (0, -10), ball.GetCenterPosition());
 
   paddle = createPaddle(world, 250, 300, 50, 5);
-  paddle.SetLinearVelocity(new b2Vec2 (1000, 0));
+  paddle.SetLinearVelocity(new b2Vec2 (paddle_speed, 0));
   paddle_constraint = createPaddleConstraints(world, 250, 300, paddle, world.GetGroundBody());
   //paddle_mov = createPaddleMov(world, paddle);
 };
@@ -93,12 +97,26 @@ function step() {
       ball = createBall(world, paddle.GetCenterPosition().x, 230);
       ball.m_userData = {name: 'ball'};
 
-      ball.SetLinearVelocity(new b2Vec2 (0, 100));
+      if((paddle.GetCenterPosition().x - paddle_width) <= 10 ||
+        (paddle.GetCenterPosition().x + paddle_width) >= 490 )
+        ball.SetLinearVelocity((new b2Vec2 (0, start_speed)));
+      else
+        ball.SetLinearVelocity((new b2Vec2 (paddle.GetLinearVelocity().x, start_speed)));
       console.log ("lose");
     }
     else if(body2.GetUserData().name == 'ground')
     {
       world.DestroyBody(body1);
+      ball = createBall(world, paddle.GetCenterPosition().x, 230);
+      ball.m_userData = {name: 'ball'};
+
+      console.log(paddle.GetCenterPosition().x);
+      if((paddle.GetCenterPosition().x - paddle_width) <= 10 ||
+        (paddle.GetCenterPosition().x + paddle_width) >= 490 )
+        ball.SetLinearVelocity((new b2Vec2 (0, start_speed)));
+      else
+        ball.SetLinearVelocity((new b2Vec2 (paddle.GetLinearVelocity().x, start_speed)));
+
       console.log ("lose");
     }
   }
