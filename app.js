@@ -16,6 +16,12 @@ var paddle_width = 30;
 var start_speed = 25.0;
 var offset = 150.0;
 
+var numBricks;
+var livesLost = 0;
+var step_Interval;
+
+var game_over = false;
+
 function setupWorld() {
   $('myCanvas').setStyle({
     backgroundColor: '#900',
@@ -36,11 +42,17 @@ function setupWorld() {
   console.log('Setup world');
   world = createWorld();
   var blocks = [];
+  bricks = [];
 
-  for(var r = 0; r < 10; r++)
+  var rows = 10;
+  var cols = 10;
+  numBricks = rows * cols;
+
+  for(var r = 0; r < rows; r++)
   {
     blocks[r] = [];
-    for(var c = 0; c < 10; c++)
+    bricks[r] = [];
+    for(var c = 0; c < cols; c++)
     {
       blocks[r][c] = createBox(world, 50 * r + 25, 20 * c + 20, 10, 5, true);
       blocks[r][c].m_userData = {name: 'brick', row: r, col: c};
@@ -76,22 +88,42 @@ function step() {
     //console.log ("second:"+c.contact.GetShape2().GetBody().GetUserData());
     var body1 = c.contact.GetShape1().GetBody();
     var body2 = c.contact.GetShape2().GetBody();
+    var data1 = body1.GetUserData();
+    var data2 = body2.GetUserData();
 
-    if(body1.GetUserData() === null || body2.GetUserData() === null)
+    if(data1 === null || data2 === null)
       continue;
     //console.log ("first name:"+c.contact.GetShape1().GetBody().GetUserData().name);
     //console.log ("secondname:"+c.contact.GetShape2().GetBody().GetUserData().name);
-    if(body1.GetUserData().name == 'ball' && body2.GetUserData().name == 'brick')
+    if(data1.name == 'ball' && data2.name == 'brick')
     {
       console.log ("destroy");
       world.DestroyBody(body2);
+      removeBrick(data2.row, data2.col);
+
+      numBricks -= 1;
+      if(numBricks <= 0){
+        drawWinning();
+        console.log('win');
+        break;
+      }
+
     }
-    if(body1.GetUserData().name == 'brick' && body2.GetUserData().name == 'ball')
+    if(data1.name == 'brick' && data2.name == 'ball')
     {
       console.log ("destroy");
       world.DestroyBody(body1);
+      removeBrick(data1.row, data1.col);
+
+      numBricks -= 1;
+      if(numBricks <= 0){
+        drawWinning();
+        console.log('win');
+        break;
+      }
+
     }
-    if(body1.GetUserData().name == 'ground')
+    if(data1.name == 'ground')
     {
       world.DestroyBody(body2);
       ball = createBall(world, paddle.GetCenterPosition().x, 230);
@@ -103,8 +135,11 @@ function step() {
       else
         ball.SetLinearVelocity((new b2Vec2 (paddle.GetLinearVelocity().x, start_speed)));
       console.log ("lose");
+
+      livesLost++;
+
     }
-    else if(body2.GetUserData().name == 'ground')
+    else if(data2.name == 'ground')
     {
       world.DestroyBody(body1);
       ball = createBall(world, paddle.GetCenterPosition().x, 230);
@@ -118,6 +153,8 @@ function step() {
         ball.SetLinearVelocity((new b2Vec2 (paddle.GetLinearVelocity().x, start_speed)));
 
       console.log ("lose");
+
+      livesLost++;
     }
   }
   if(paddle.GetLinearVelocity().x != paddle_speed)
@@ -126,10 +163,11 @@ function step() {
   //console.log("motor " +paddle_constraint.m_enableMotor + " speed " + paddle_constraint.m_motorSpeed + "joint :" + paddle_constraint.GetJointSpeed());
 	world.Step(timeStep, iteration);
 	ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-	drawWorld(world, ctx);
+  drawMovingObjects();
+
 }
 
-Event.observe(window, 'load', function() {
+function start_game() {
   console.log('Setup');
 
 	var canvasElm = $('myCanvas');
@@ -145,13 +183,15 @@ Event.observe(window, 'load', function() {
   view.draw();
 
 	setupWorld();
+	drawWorld(world);
+
 	ctx = $('myCanvas').getContext('2d');
 	canvasWidth = parseInt(canvasElm.width);
 	canvasHeight = parseInt(canvasElm.height);
 	canvasTop = parseInt(canvasElm.style.top);
 	canvasLeft = parseInt(canvasElm.style.left);
 
-  setInterval(step, 1.0);
+  step_Interval = setInterval(step, 1.0);
 
   /*
   var tool = new Tool();
@@ -171,7 +211,10 @@ Event.observe(window, 'load', function() {
 
   }
   */
-});
+}
+
+//Start Game on load
+Event.observe(window, 'load', start_game);
 
 $(document).observe('keydown', function (e) {
   switch (e.keyCode) {
@@ -217,6 +260,15 @@ $(document).observe('keydown', function (e) {
     case 40: //down arrow
       e.stop();
       break;
+    case 13: //enter
+      e.stop();
+      if(game_over)
+      {
+        start_game();
+        game_over = false;
+
+      }
+
   }
 });
 

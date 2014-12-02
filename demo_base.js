@@ -52,7 +52,7 @@ function createBox(world, x, y, width, height, fixed, angle) {
 	var boxSd = new b2BoxDef();
 	if (!fixed) boxSd.density = 1.0;
 	boxSd.extents.Set(width, height);
-	boxSd.restitution = 1.05;
+	boxSd.restitution = 1.00;
   if(angle != 0)
   {
     if(angle < 0)
@@ -102,7 +102,7 @@ function createPaddle(world, x,y,width,height)
   polySd.localRotation = Math.PI;
 
   polySd.density = 1.0;
-  polySd.restitution = 0.5;
+  polySd.restitution = 1.0;
   polySd.friction = 0.0;
 
   var polyBd = new b2BodyDef();

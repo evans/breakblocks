@@ -8,18 +8,46 @@ function scaleY(num)
   return num * canvasHeight /340.0;
 }
 
-function drawWorld(world, context) {
+var ball_group;
+var paddle_group;
+var bricks;
+
+function removeBrick(x,y)
+{
+  bricks[x][y].remove();
+}
+
+function drawMovingObjects()
+{
+  ball_group.children.forEach(function(child) {
+        child.remove();
+      });
+
+  paddle_group.children.forEach(function(child) {
+        child.remove();
+      });
+
+	drawShape(ball.GetShapeList());
+	drawShape(paddle.GetShapeList());
+
+  view.draw();
+}
+
+function drawWorld(world) {
 
   project.activeLayer.children.forEach(function(child) {
         child.remove();
       });
 
+  paddle_group = new Group();
+  ball_group = new Group();
+
 	for (var j = world.m_jointList; j; j = j.m_next) {
-		drawJoint(j, context);
+		drawJoint(j);
 	}
 	for (var b = world.m_bodyList; b; b = b.m_next) {
 		for (var s = b.GetShapeList(); s != null; s = s.GetNext()) {
-			drawShape(s, context);
+			drawShape(s);
 		}
 	}
 
@@ -35,7 +63,8 @@ function drawWorld(world, context) {
 */
   view.draw();
 }
-function drawJoint(joint, context) {
+function drawJoint(joint) {
+  /*
 	var b1 = joint.m_body1;
 	var b2 = joint.m_body2;
 	var x1 = b1.m_position;
@@ -72,11 +101,9 @@ function drawJoint(joint, context) {
 		break;
 	}
 	context.stroke();
+  */
 }
-function drawShape(shape, context) {
-	//context.strokeStyle = '#ffffff';
-	//context.beginPath();
-  console.log(shape.m_type);
+function drawShape(shape) {
 	switch (shape.m_type) {
 	case b2Shape.e_circleShape:
   {
@@ -85,6 +112,8 @@ function drawShape(shape, context) {
     var r = circle.m_radius;
     var p_circle = new Path.Circle(new Point(pos.x, pos.y), r);
     p_circle.fillColor = 'black';
+
+    ball_group.addChild(p_circle);
 
 /*
     var segments = 16.0;
@@ -128,6 +157,14 @@ function drawShape(shape, context) {
       var rect = Path.Rectangle(new Point(tl.x, tl.y), new Point(br.x, br.y));
       rect.fillColor = 'pink';
 
+      var bod = box.GetBody();
+      var data = bod.GetUserData();
+      if(data != null && data.name == 'brick')
+      {
+        console.log('Brick');
+        bricks[data.row][data.col] = rect;
+      }
+
       break;
     }
 
@@ -149,9 +186,9 @@ function drawShape(shape, context) {
       var vert = b2Math.AddVV(poly_pos, b2Math.b2MulMV(poly.m_R, poly.m_vertices[verts]));
       poly_path.add(new Point(vert.x, vert.y));
 
-      //}
     }
     poly_path.fillColor = 'blue';
+    paddle_group.addChild(poly_path);
 
     /*
     var tV = b2Math.AddVV(poly.m_position, b2Math.b2MulMV(poly.m_R, poly.m_vertices[0]));
@@ -165,6 +202,30 @@ function drawShape(shape, context) {
   }
   break;
 }
-	//context.stroke();
+}
+
+function drawWinning()
+{
+  clearInterval(step_Interval);
+
+  while(project.activeLayer.children.length > 0)
+    project.activeLayer.children.forEach(function(child) {
+          child.remove();
+        });
+
+  var text = new PointText(new Point(canvasWidth/2, canvasHeight/2));
+  text.justification = 'center';
+  text.fillColor = 'black';
+  text.content = 'You Win and managed to die ' + livesLost + ' times!';
+
+
+  var text2 = new PointText(new Point(canvasWidth/2, canvasHeight/2 + 0.1 * canvasHeight));
+  text2.justification = 'center';
+  text2.fillColor = 'black';
+  text2.content = 'Better Luck Next time! Want to play again? (Hit enter)';
+
+  view.draw();
+
+  game_over = true;
 }
 
