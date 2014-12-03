@@ -325,7 +325,6 @@ $(document).observe('keyup', function (e) {
 });
 
 Event.observe(window, "resize", function(){
-  console.log("resize");
 	var canvasElm = $('myCanvas');
 
 	canvasWidth = parseInt(canvasElm.width);

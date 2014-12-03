@@ -61,7 +61,7 @@ function createBox(world, x, y, width, height, fixed, angle) {
     }
     else
       boxSd.localRotation = angle;
-    console.log(boxSd.localRotation);
+    //console.log(boxSd.localRotation);
   }
   boxSd.m_type = b2Shape.e_boxShape;
 
@@ -78,7 +78,7 @@ function createPaddle(world, x,y,width,height)
   polySd1.vertexCount = points.length;
   for (var i = 0; i < points.length; i++) {
     polySd1.vertices[i].Set(points[i][0], points[i][1]);
-    console.log("vertices["+i+"]"+polySd1.vertices[i]);
+    //console.log("vertices["+i+"]"+polySd1.vertices[i]);
   }
 
   var points = [
@@ -93,10 +93,8 @@ function createPaddle(world, x,y,width,height)
     //[0.0, 15.0]];
   var polySd = new b2PolyDef();
   polySd.vertexCount = points.length;
-  console.log(points.length);
-  console.log("vertex"+polySd.vertexCount);
   for (var i = 0; i < points.length; i++) {
-    console.log("vertices["+i+"]"+polySd.vertices[i]);
+    //console.log("vertices["+i+"]"+polySd.vertices[i]);
     polySd.vertices[i].Set(points[i][0], points[i][1]);
   }
   polySd.localRotation = Math.PI;
