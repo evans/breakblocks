@@ -233,6 +233,11 @@ Event.observe(window, 'load', function(){
   text2.style = text.style;
   text2.content = 'Welcome to Break Blocks';
 
+
+  var Name = new PointText(new Point(canvasWidth/2, canvasHeight/2 + 0.3 * canvasHeight));
+  Name.style = text.style;
+  Name.content = 'Created by Evans Hauser';
+
   view.draw();
 });
 

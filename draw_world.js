@@ -17,6 +17,12 @@ function scaleY(num)
   return num * canvasHeight /340.0;
 }
 
+function scaleRadius(num)
+{
+  return num * Math.sqrt(canvasWidth^2+ canvasHeight^2) /
+    Math.sqrt(510.0^2 + 340.0^2);
+}
+
 function removeBrick(x,y)
 {
   bricks[x][y].remove();
@@ -116,7 +122,7 @@ function drawShape(shape) {
     var circle = shape;
     var pos = circle.m_position;
     var r = circle.m_radius;
-    var p_circle = new Path.Circle(createPoint(pos.x, pos.y), r);
+    var p_circle = new Path.Circle(createPoint(pos.x, pos.y), scaleRadius(r));
     p_circle.fillColor = 'black';
 
     ball_group.addChild(p_circle);
@@ -166,7 +172,6 @@ function drawShape(shape) {
       var data = bod.GetUserData();
       if(data != null && data.name == 'brick')
       {
-        console.log('Brick');
         bricks[data.row][data.col] = rect;
         rect.fillColor = 'red';
       }
